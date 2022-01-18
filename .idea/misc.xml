@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/AndroidStudioFolders/ClubOlympus/app/src/main/res/drawable/ic_baseline_sports_kabaddi_24.xml" value="0.22763157894736843" />
+        <entry key="..\:/AndroidStudioFolders/ClubOlympus/app/src/main/res/drawable/ic_white_person_add_24.xml" value="0.22763157894736843" />
+        <entry key="..\:/AndroidStudioFolders/ClubOlympus/app/src/main/res/layout/activity_add_member.xml" value="0.21403508771929824" />
+        <entry key="..\:/AndroidStudioFolders/ClubOlympus/app/src/main/res/layout/activity_main.xml" value="0.264" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
