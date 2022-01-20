@@ -14,6 +14,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.example.clubolympus.data.ClubOlympusContract.MemberEntry;
+
 import java.util.ArrayList;
 
 public class AddMemberActivity extends AppCompatActivity {
@@ -47,11 +49,11 @@ public class AddMemberActivity extends AppCompatActivity {
                 String selectedGender = (String)adapterView.getItemAtPosition(i);
                 if (!TextUtils.isEmpty(selectedGender)) {
                     if (selectedGender.equals("Male")) {
-                        gender = 1;
+                        gender = MemberEntry.GENDER_MALE;
                     } else if (selectedGender.equals("Female")) {
-                        gender = 2;
+                        gender = MemberEntry.GENDER_FEMALE;
                     } else {
-                        gender = 0;
+                        gender = MemberEntry.GENDER_UNKNOWN;
                     }
                 }
             }
