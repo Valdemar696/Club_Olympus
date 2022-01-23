@@ -23,7 +23,7 @@ public class AddMemberActivity extends AppCompatActivity {
     private EditText firstNameEditText;
     private EditText lastNameEditText;
     private Spinner genderSpinner;
-    private EditText groupEditText;
+    private EditText sportTypeEditText;
     private int gender = 0;
 
     private ArrayAdapter spinnerAdapter;
@@ -36,7 +36,7 @@ public class AddMemberActivity extends AppCompatActivity {
         firstNameEditText = findViewById(R.id.firstNameEditText);
         lastNameEditText = findViewById(R.id.lastNameEditText);
         genderSpinner = findViewById(R.id.genderSpinner);
-        groupEditText = findViewById(R.id.groupEditText);
+        sportTypeEditText = findViewById(R.id.sportTypeEditText);
 
         spinnerAdapter = ArrayAdapter.createFromResource(this,
                 R.array.array_gender, android.R.layout.simple_spinner_item);
