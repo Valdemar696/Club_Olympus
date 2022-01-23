@@ -1,12 +1,15 @@
 package com.example.clubolympus.data;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+import com.example.clubolympus.data.ClubOlympusContract.*;
 
 public class OlympusContentProvider extends ContentProvider {
 
@@ -25,7 +28,6 @@ public class OlympusContentProvider extends ContentProvider {
 
     }
 
-
     @Override
     public boolean onCreate() {
         databaseOpenHelper = new OlympusDatabaseOpenHelper(getContext());
@@ -33,8 +35,29 @@ public class OlympusContentProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(Uri uri, String[] strings, String s, String[] strings1, String s1) { //read method
-        return null;
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) { //read method
+        SQLiteDatabase sqLiteDatabase = databaseOpenHelper.getReadableDatabase();
+        Cursor cursor;
+
+        int match = uriMatcher.match(uri);
+
+        switch (match) {
+            case MEMBERS:
+                cursor = sqLiteDatabase.query(MemberEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+
+            case MEMBER_ID:
+                    selection= MemberEntry.KEY_ID + "=?";
+                    selectionArgs = new String[] {String.valueOf(ContentUris.parseId(uri))};
+                    cursor = sqLiteDatabase.query (MemberEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+
+            default:
+                Toast.makeText(getContext(), "Incorrect URI", Toast.LENGTH_LONG).show();
+                throw new IllegalArgumentException("Can't query incorrect URI" + uri);
+
+        }
+        return cursor;
     }
 
     @Override
