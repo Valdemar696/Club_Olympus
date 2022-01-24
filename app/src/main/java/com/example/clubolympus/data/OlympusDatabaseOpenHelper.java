@@ -13,12 +13,12 @@ public class OlympusDatabaseOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String CREATE_MEMBERS_TABLE = "CREATE TABLE " + MemberEntry.TABLE_NAME + "(" +
-                MemberEntry.KEY_ID + "INTEGER PRIMARY KEY, " +
+        String CREATE_MEMBERS_TABLE = "CREATE TABLE " + MemberEntry.TABLE_NAME + " (" +
+                MemberEntry.KEY_ID + " INTEGER PRIMARY KEY, " +
                 MemberEntry.KEY_FIRST_NAME + " TEXT, " +
                 MemberEntry.KEY_LAST_NAME + " TEXT, " +
                 MemberEntry.KEY_GENDER + " INTEGER NOT NULL, " +
-                MemberEntry.KEY_SPORT_TYPE + "TEXT" + ")";
+                MemberEntry.KEY_SPORT_TYPE + " TEXT " + ")";
         sqLiteDatabase.execSQL(CREATE_MEMBERS_TABLE);
     }
 

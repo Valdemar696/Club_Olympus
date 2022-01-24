@@ -7,6 +7,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.clubolympus.data.ClubOlympusContract.*;
@@ -19,12 +20,16 @@ public class OlympusContentProvider extends ContentProvider {
     private static final int MEMBER_ID = 2;
 
     // Creates a UriMatcher object.
-    private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    private static final UriMatcher uriMatcher =
+            new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
 
-        uriMatcher.addURI(ClubOlympusContract.AUTHORITY, ClubOlympusContract.PATH_MEMBERS, MEMBERS);
-        uriMatcher.addURI(ClubOlympusContract.AUTHORITY, ClubOlympusContract.PATH_MEMBERS + "/#", MEMBER_ID);
+        uriMatcher.addURI(ClubOlympusContract.AUTHORITY,
+                ClubOlympusContract.PATH_MEMBERS, MEMBERS);
+        uriMatcher.addURI(ClubOlympusContract.AUTHORITY,
+                ClubOlympusContract.PATH_MEMBERS +
+                        "/#", MEMBER_ID);
 
     }
 
@@ -35,7 +40,8 @@ public class OlympusContentProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) { //read method
+    public Cursor query(Uri uri, String[] projection, String selection,
+                        String[] selectionArgs, String sortOrder) { //read method
         SQLiteDatabase sqLiteDatabase = databaseOpenHelper.getReadableDatabase();
         Cursor cursor;
 
@@ -43,13 +49,17 @@ public class OlympusContentProvider extends ContentProvider {
 
         switch (match) {
             case MEMBERS:
-                cursor = sqLiteDatabase.query(MemberEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                cursor = sqLiteDatabase.query(MemberEntry.TABLE_NAME, projection,
+                        selection, selectionArgs, null, null, sortOrder);
                 break;
 
             case MEMBER_ID:
                     selection= MemberEntry.KEY_ID + "=?";
-                    selectionArgs = new String[] {String.valueOf(ContentUris.parseId(uri))};
-                    cursor = sqLiteDatabase.query (MemberEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                    selectionArgs = new String[]
+                            {String.valueOf(ContentUris.parseId(uri))};
+                    cursor = sqLiteDatabase.query(MemberEntry.TABLE_NAME,
+                            projection, selection, selectionArgs,
+                            null, null, sortOrder);
                 break;
 
             default:
@@ -61,8 +71,26 @@ public class OlympusContentProvider extends ContentProvider {
     }
 
     @Override
-    public Uri insert(Uri uri, ContentValues contentValues) { //create method
-        return null;
+    public Uri insert(Uri uri, ContentValues values) { //create method
+
+        SQLiteDatabase sqLiteDatabase = databaseOpenHelper.getWritableDatabase();
+
+        int match = uriMatcher.match(uri);
+
+        switch (match) {
+            case MEMBERS:
+                long id = sqLiteDatabase.insert(MemberEntry.TABLE_NAME, null, values);
+                if (id == -1) {
+                    Log.e("insertMethod", "Insertion of data in the table failed for " + uri);
+                    return null;
+                }
+
+                return ContentUris.withAppendedId(uri, id);
+
+            default:
+                throw new IllegalArgumentException("Insertion of data in the table failed for " + uri);
+
+        }
     }
 
     @Override

@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <provider
-            android:authorities="com.example.clubolympus"
+            android:authorities="com.example.clubOlympus"
             android:name=".data.OlympusContentProvider"
             android:exported="false" />
     </application>

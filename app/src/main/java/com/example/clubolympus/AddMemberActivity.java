@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -13,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.clubolympus.data.ClubOlympusContract.MemberEntry;
 
@@ -75,6 +79,7 @@ public class AddMemberActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.save_member:
+                insertMember();
                 return true;
             case R.id.delete_member:
                 return true;
@@ -83,5 +88,26 @@ public class AddMemberActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void insertMember() {
+        String firstName = firstNameEditText.getText().toString().trim();
+        String lastName = lastNameEditText.getText().toString().trim();
+        String sportType = sportTypeEditText.getText().toString().trim();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MemberEntry.KEY_FIRST_NAME, firstName);
+        contentValues.put(MemberEntry.KEY_LAST_NAME, lastName);
+        contentValues.put(MemberEntry.KEY_SPORT_TYPE, sportType);
+        contentValues.put(MemberEntry.KEY_GENDER, gender);
+
+        ContentResolver contentResolver = getContentResolver();
+        Uri uri = contentResolver.insert(MemberEntry.CONTENT_URI, contentValues);
+
+        if (uri == null) {
+            Toast.makeText(this, "Insertion of data in the table failed.", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Data saved.", Toast.LENGTH_LONG).show();
+        }
     }
 }
