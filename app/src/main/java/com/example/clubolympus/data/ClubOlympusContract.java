@@ -1,5 +1,6 @@
 package com.example.clubolympus.data;
 
+import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -35,5 +36,11 @@ public final class ClubOlympusContract {
 
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_MEMBERS);
 
+        public static final String  CONTENT_MULTIPLE_ITEMS = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + AUTHORITY + PATH_MEMBERS;
+/*      MIME Type, который исп. в getType() (ContentProvider) при передаче данных с несколькими строками
+        ContentResolver.CURSOR_DIR_BASE_TYPE - предопределённая константа, означающая "vnd.android.cursor.dir/" */
+        public static final String  CONTENT_SINGLE_ITEM = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + AUTHORITY + PATH_MEMBERS;
+/*      MIME Type для работы с URI, который нужен для работы с одной строкой
+        CURSOR_ITEM_BASE_TYPE - предопределённая константа, означающая "vnd.android.cursor.item/" */
     }
 }

@@ -23,7 +23,7 @@ public class OlympusContentProvider extends ContentProvider {
     private static final UriMatcher uriMatcher =
             new UriMatcher(UriMatcher.NO_MATCH);
 
-    static {
+    static { //Статический блок. Используется для добавления ЮРИ в переменную ЮриМэтчер
 
         uriMatcher.addURI(ClubOlympusContract.AUTHORITY,
                 ClubOlympusContract.PATH_MEMBERS, MEMBERS);
@@ -73,6 +73,28 @@ public class OlympusContentProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) { //create method
 
+        String firstName = values.getAsString(MemberEntry.KEY_FIRST_NAME);
+        if (firstName == null) {
+            throw new IllegalArgumentException("You have to input correct first name" + uri);
+        }
+
+        String lastName = values.getAsString(MemberEntry.KEY_LAST_NAME);
+        if (lastName == null) {
+            throw new IllegalArgumentException("You have to input correct last name" + uri);
+        }
+
+        Integer gender = values.getAsInteger(MemberEntry.KEY_GENDER);
+        if (gender == null || !(gender == MemberEntry.GENDER_UNKNOWN ||
+                gender == MemberEntry.GENDER_FEMALE ||
+                gender == MemberEntry.GENDER_MALE)) {
+            throw new IllegalArgumentException("You have to input correct gender" + uri);
+        }
+
+        String sportType = values.getAsString(MemberEntry.KEY_SPORT_TYPE);
+        if (sportType == null) {
+            throw new IllegalArgumentException("You have to input correct sport type" + uri);
+        }
+
         SQLiteDatabase sqLiteDatabase = databaseOpenHelper.getWritableDatabase();
 
         int match = uriMatcher.match(uri);
@@ -94,18 +116,98 @@ public class OlympusContentProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(Uri uri, String s, String[] strings) {
-        return 0;
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
+
+        SQLiteDatabase sqLiteDatabase = databaseOpenHelper.getWritableDatabase();
+
+        int match = uriMatcher.match(uri);
+
+        switch (match) {
+            case MEMBERS:
+                return sqLiteDatabase.delete(MemberEntry.TABLE_NAME, selection, selectionArgs);
+
+            case MEMBER_ID:
+                selection= MemberEntry.KEY_ID + "=?";
+                selectionArgs = new String[]
+                        {String.valueOf(ContentUris.parseId(uri))};
+                return sqLiteDatabase.delete(MemberEntry.TABLE_NAME, selection, selectionArgs);
+
+            default:
+                Toast.makeText(getContext(), "Incorrect URI", Toast.LENGTH_LONG).show();
+                throw new IllegalArgumentException("Can't delete this URI" + uri);
+
+        }
     }
 
     @Override
-    public int update(Uri uri, ContentValues contentValues, String s, String[] strings) {
-        return 0;
+    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+
+        if (values.containsKey(MemberEntry.KEY_FIRST_NAME)) {
+            String firstName = values.getAsString(MemberEntry.KEY_FIRST_NAME);
+            if (firstName == null) {
+                throw new IllegalArgumentException("You have to input correct first name" + uri);
+            }
+        }
+
+        if (values.containsKey(MemberEntry.KEY_LAST_NAME)) {
+            String lastName = values.getAsString(MemberEntry.KEY_LAST_NAME);
+            if (lastName == null) {
+                throw new IllegalArgumentException("You have to input correct last name" + uri);
+            }
+        }
+
+        if (values.containsKey(MemberEntry.KEY_GENDER)) {
+            Integer gender = values.getAsInteger(MemberEntry.KEY_GENDER);
+            if (gender == null || !(gender == MemberEntry.GENDER_UNKNOWN ||
+                    gender == MemberEntry.GENDER_FEMALE ||
+                    gender == MemberEntry.GENDER_MALE)) {
+                throw new IllegalArgumentException("You have to input correct gender" + uri);
+            }
+        }
+
+        if (values.containsKey(MemberEntry.KEY_SPORT_TYPE)) {
+            String sportType = values.getAsString(MemberEntry.KEY_SPORT_TYPE);
+            if (sportType == null) {
+                throw new IllegalArgumentException("You have to input correct sport type" + uri);
+            }
+        }
+
+        SQLiteDatabase sqLiteDatabase = databaseOpenHelper.getWritableDatabase();
+
+        int match = uriMatcher.match(uri);
+
+        switch (match) {
+            case MEMBERS:
+                return sqLiteDatabase.update(MemberEntry.TABLE_NAME, values, selection, selectionArgs);
+
+            case MEMBER_ID:
+                selection= MemberEntry.KEY_ID + "=?";
+                selectionArgs = new String[]
+                        {String.valueOf(ContentUris.parseId(uri))};
+                return sqLiteDatabase.update(MemberEntry.TABLE_NAME, values, selection, selectionArgs);
+
+            default:
+                Toast.makeText(getContext(), "Incorrect URI", Toast.LENGTH_LONG).show();
+                throw new IllegalArgumentException("Can't update this URI" + uri);
+
+        }
     }
 
     @Override
     public String getType(Uri uri) {
-        return null;
+        int match = uriMatcher.match(uri);
+
+        switch (match) {
+            case MEMBERS:
+                return MemberEntry.CONTENT_MULTIPLE_ITEMS;
+
+            case MEMBER_ID:
+                return MemberEntry.CONTENT_SINGLE_ITEM;
+
+            default:
+                Toast.makeText(getContext(), "Incorrect URI", Toast.LENGTH_LONG).show();
+                throw new IllegalArgumentException("Unknown URI:" + uri);
+        }
     }
 }
 
@@ -113,8 +215,8 @@ public class OlympusContentProvider extends ContentProvider {
 // content://com.example.clubolympus/members
 //URL - Unified Resource Locator
 //http://google.com
-//content://com.example.clubolympus/members/69
-//content://com.example.clubolympus/members
+//content://com.example.clubolympus/members/69  1
+//content://com.example.clubolympus/members     2
 //content://com.android.calendar/events
 //content://user_dictionary/words
 //content:// -scheme
