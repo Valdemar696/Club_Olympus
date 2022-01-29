@@ -67,6 +67,7 @@ public class OlympusContentProvider extends ContentProvider {
                 throw new IllegalArgumentException("Can't query incorrect URI" + uri);
 
         }
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
     }
 
@@ -107,6 +108,7 @@ public class OlympusContentProvider extends ContentProvider {
                     return null;
                 }
 
+                getContext().getContentResolver().notifyChange(uri, null);
                 return ContentUris.withAppendedId(uri, id);
 
             default:
@@ -122,21 +124,30 @@ public class OlympusContentProvider extends ContentProvider {
 
         int match = uriMatcher.match(uri);
 
+        int rowsDeleted;
+
         switch (match) {
             case MEMBERS:
-                return sqLiteDatabase.delete(MemberEntry.TABLE_NAME, selection, selectionArgs);
+                rowsDeleted = sqLiteDatabase.delete(MemberEntry.TABLE_NAME, selection, selectionArgs);
+                break;
 
             case MEMBER_ID:
                 selection= MemberEntry.KEY_ID + "=?";
                 selectionArgs = new String[]
                         {String.valueOf(ContentUris.parseId(uri))};
-                return sqLiteDatabase.delete(MemberEntry.TABLE_NAME, selection, selectionArgs);
+                rowsDeleted = sqLiteDatabase.delete(MemberEntry.TABLE_NAME, selection, selectionArgs);
 
             default:
                 Toast.makeText(getContext(), "Incorrect URI", Toast.LENGTH_LONG).show();
                 throw new IllegalArgumentException("Can't delete this URI" + uri);
 
         }
+
+        if (rowsDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return  rowsDeleted;
     }
 
     @Override
@@ -175,22 +186,29 @@ public class OlympusContentProvider extends ContentProvider {
         SQLiteDatabase sqLiteDatabase = databaseOpenHelper.getWritableDatabase();
 
         int match = uriMatcher.match(uri);
+        int rowsUpdated;
 
         switch (match) {
             case MEMBERS:
-                return sqLiteDatabase.update(MemberEntry.TABLE_NAME, values, selection, selectionArgs);
+                rowsUpdated = sqLiteDatabase.update(MemberEntry.TABLE_NAME, values, selection, selectionArgs);
+
+                break;
 
             case MEMBER_ID:
                 selection= MemberEntry.KEY_ID + "=?";
                 selectionArgs = new String[]
                         {String.valueOf(ContentUris.parseId(uri))};
-                return sqLiteDatabase.update(MemberEntry.TABLE_NAME, values, selection, selectionArgs);
+                rowsUpdated = sqLiteDatabase.update(MemberEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
 
             default:
                 Toast.makeText(getContext(), "Incorrect URI", Toast.LENGTH_LONG).show();
                 throw new IllegalArgumentException("Can't update this URI" + uri);
-
         }
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsUpdated;
     }
 
     @Override
