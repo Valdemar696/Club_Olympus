@@ -43,8 +43,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="49dp" />
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="49dp"
+        android:layout_marginEnd="20dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
@@ -57,7 +58,4 @@
         android:clickable="true"
         app:srcCompat="@drawable/ic_white_person_add_24" />
 
-    <GridView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 </RelativeLayout>
